@@ -1,0 +1,60 @@
+[poll]
+interval = "10m"
+lookback = "60m"
+unseen_only = false
+
+[account]
+host = "imap.example.com"
+port = 993
+username = "user@example.com"
+password_env = "LISTHAUL_IMAP_PASSWORD"
+mailbox = "INBOX"
+
+[state]
+enabled = true
+path = "~/.listhaul/state.json"
+
+[actions]
+enabled = ["fileinto", "discard", "mark_read", "flag", "stop"]
+
+# Move newsletters based on List-Id header.
+[[rules]]
+name = "newsletters"
+
+[rules.if]
+header = { names = ["List-Id"], match = "contains", values = ["lists.example.com"] }
+
+[[rules.then]]
+action = "fileinto"
+folder = "INBOX/Newsletters"
+
+[[rules.then]]
+action = "stop"
+
+# Flag promotional subjects without a List-Id header.
+[[rules]]
+name = "promo-subject"
+
+[rules.if]
+anyof = [
+  { header = { names = ["Subject"], match = "matches", values = ["*sale*", "*unsubscribe*"] } },
+  { not = { exists = ["List-Id"] } },
+]
+
+[[rules.then]]
+action = "mark_read"
+
+[[rules.then]]
+action = "flag"
+flag = "\\Flagged"
+set = true
+
+# Example discard rule (disabled unless you add "discard" to actions.enabled above).
+# [[rules]]
+# name = "old-list"
+#
+# [rules.if]
+# header = { names = ["List-Id"], match = "contains", values = ["legacy-list.example.com"] }
+#
+# [[rules.then]]
+# action = "discard"

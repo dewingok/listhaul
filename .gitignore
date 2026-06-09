@@ -1,0 +1,10 @@
+/bin/
+*.exe
+*.test
+*.out
+/listhaul
+.mise.local.toml
+mise.local.toml
+*.local.toml
+/.listhaul/
+state.json

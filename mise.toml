@@ -1,0 +1,26 @@
+[tools]
+go = "1.23"
+
+[tasks.build]
+description = "Build the listhaul binary"
+run = "go build -o bin/listhaul ./cmd/listhaul"
+
+[tasks.test]
+description = "Run unit tests"
+run = "go test ./..."
+
+[tasks.lint]
+description = "Run golangci-lint"
+run = "golangci-lint run ./..."
+
+[tasks.fmt]
+description = "Format Go source"
+run = "go fmt ./..."
+
+[tasks.run]
+description = "Run listhaul in poll mode"
+run = "go run ./cmd/listhaul run -c config.example.toml"
+
+[tasks.validate]
+description = "Validate example config"
+run = "go run ./cmd/listhaul validate -c config.example.toml"
