@@ -8,3 +8,5 @@ mise.local.toml
 *.local.toml
 /.listhaul/
 state.json
+.env
+/config/

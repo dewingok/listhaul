@@ -1,0 +1,36 @@
+# One service per mailbox. Duplicate a service block for each account you run.
+#
+# Setup:
+#   cp .env.example .env          # set passwords (gitignored)
+#   cp docker/mailbox.example.toml config/gmail.toml
+#   cp docker/mailbox.example.toml config/yahoo.toml
+#   # edit each config: host, username, password_env, rules
+#
+#   docker compose up -d --build
+
+services:
+  gmail:
+    build: .
+    image: listhaul:local
+    restart: unless-stopped
+    command: ["run", "-c", "/config/listhaul.toml"]
+    volumes:
+      - ./config/gmail.toml:/config/listhaul.toml:ro
+      - gmail-state:/data
+    environment:
+      LISTHAUL_IMAP_PASSWORD: ${LISTHAUL_GMAIL_PASSWORD:?set LISTHAUL_GMAIL_PASSWORD in .env}
+
+  yahoo:
+    build: .
+    image: listhaul:local
+    restart: unless-stopped
+    command: ["run", "-c", "/config/listhaul.toml"]
+    volumes:
+      - ./config/yahoo.toml:/config/listhaul.toml:ro
+      - yahoo-state:/data
+    environment:
+      LISTHAUL_IMAP_PASSWORD: ${LISTHAUL_YAHOO_PASSWORD:?set LISTHAUL_YAHOO_PASSWORD in .env}
+
+volumes:
+  gmail-state:
+  yahoo-state:
