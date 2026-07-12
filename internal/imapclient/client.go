@@ -24,7 +24,7 @@ type Message struct {
 	Headers textproto.MIMEHeader
 }
 
-func Connect(ctx context.Context, cfg *config.Config) (*Client, error) {
+func Connect(_ context.Context, cfg *config.Config) (*Client, error) {
 	password, err := cfg.Password()
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (c *Client) Close() error {
 	return c.client.Close()
 }
 
-func (c *Client) SearchRecent(ctx context.Context) ([]uint32, error) {
+func (c *Client) SearchRecent(_ context.Context) ([]uint32, error) {
 	since := time.Now().Add(-c.cfg.Poll.Lookback.Duration)
 	criteria := &imap.SearchCriteria{Since: since}
 	if c.cfg.Poll.UnseenOnly {
@@ -80,7 +80,7 @@ func (c *Client) SearchRecent(ctx context.Context) ([]uint32, error) {
 	return result, nil
 }
 
-func (c *Client) FetchHeaders(ctx context.Context, uids []uint32) (map[uint32]textproto.MIMEHeader, error) {
+func (c *Client) FetchHeaders(_ context.Context, uids []uint32) (map[uint32]textproto.MIMEHeader, error) {
 	if len(uids) == 0 {
 		return map[uint32]textproto.MIMEHeader{}, nil
 	}
@@ -119,7 +119,7 @@ func (c *Client) FetchHeaders(ctx context.Context, uids []uint32) (map[uint32]te
 	return headers, nil
 }
 
-func (c *Client) FileInto(ctx context.Context, uid uint32, folder string) error {
+func (c *Client) FileInto(_ context.Context, uid uint32, folder string) error {
 	uidSet := imap.UIDSetNum(imap.UID(uid))
 	if _, err := c.client.Move(uidSet, folder).Wait(); err != nil {
 		return fmt.Errorf("move uid %d to %q: %w", uid, folder, err)
@@ -127,7 +127,7 @@ func (c *Client) FileInto(ctx context.Context, uid uint32, folder string) error 
 	return nil
 }
 
-func (c *Client) Discard(ctx context.Context, uid uint32) error {
+func (c *Client) Discard(_ context.Context, uid uint32) error {
 	uidSet := imap.UIDSetNum(imap.UID(uid))
 	storeFlags := &imap.StoreFlags{
 		Op:     imap.StoreFlagsAdd,
@@ -143,11 +143,11 @@ func (c *Client) Discard(ctx context.Context, uid uint32) error {
 	return nil
 }
 
-func (c *Client) MarkRead(ctx context.Context, uid uint32) error {
-	return c.SetFlag(ctx, uid, string(imap.FlagSeen), true)
+func (c *Client) MarkRead(_ context.Context, uid uint32) error {
+	return c.SetFlag(context.Background(), uid, string(imap.FlagSeen), true)
 }
 
-func (c *Client) SetFlag(ctx context.Context, uid uint32, flag string, set bool) error {
+func (c *Client) SetFlag(_ context.Context, uid uint32, flag string, set bool) error {
 	uidSet := imap.UIDSetNum(imap.UID(uid))
 	op := imap.StoreFlagsAdd
 	if !set {

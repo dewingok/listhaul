@@ -52,7 +52,7 @@ func newRunCmd(runOnce bool) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   use,
 		Short: short,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, logger, err := loadRuntime()
 			if err != nil {
 				return err
@@ -71,7 +71,7 @@ func newValidateCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "validate",
 		Short: "Validate configuration without connecting to IMAP",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			cfg, err := config.Load(configPath)
 			if err != nil {
 				return err
@@ -90,7 +90,7 @@ func newDryRunCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "dry-run",
 		Short: "Evaluate rules and log actions without mutating mail",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			cfg, logger, err := loadRuntime()
 			if err != nil {
 				return err
