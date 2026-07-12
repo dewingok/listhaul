@@ -1,0 +1,31 @@
+[poll]
+interval = "10m"
+lookback = "60m"
+unseen_only = false
+
+[account]
+host = "imap.example.com"
+port = 993
+username = "user@example.com"
+password_env = "LISTHAUL_IMAP_PASSWORD"
+mailbox = "INBOX"
+
+[state]
+enabled = true
+path = "/data/state.json"
+
+[actions]
+enabled = ["fileinto", "discard", "mark_read", "flag", "stop"]
+
+[[rules]]
+name = "newsletters"
+
+[rules.if]
+header = { names = ["List-Id"], match = "contains", values = ["lists.example.com"] }
+
+[[rules.then]]
+action = "fileinto"
+folder = "INBOX/Newsletters"
+
+[[rules.then]]
+action = "stop"

@@ -131,6 +131,31 @@ mise run lint   # requires golangci-lint
 mise run build
 ```
 
+## Docker
+
+Run one container per mailbox with Docker Compose. Each service mounts its own config and keeps UID state in a dedicated volume.
+
+```bash
+cp .env.example .env
+mkdir -p config
+cp docker/mailbox.example.toml config/gmail.toml
+cp docker/mailbox.example.toml config/yahoo.toml
+# Edit each file: IMAP host, username, password_env, rules.
+# Use path = "/data/state.json" for state (already set in the example).
+
+docker compose up -d --build
+docker compose logs -f gmail
+```
+
+One-off commands:
+
+```bash
+docker compose run --rm gmail validate -c /config/listhaul.toml
+docker compose run --rm gmail dry-run -c /config/listhaul.toml
+```
+
+To add another mailbox, copy a service block in `docker-compose.yml`, point it at a new config file, add a named volume, and set the password in `.env`.
+
 ## Running as a service
 
 ### systemd (Linux)

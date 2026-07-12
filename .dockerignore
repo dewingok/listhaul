@@ -1,0 +1,11 @@
+.git
+.github
+bin/
+*.local.toml
+.env
+.env.*
+!.env.example
+.listhaul/
+state.json
+README.md
+docker-compose*.yml

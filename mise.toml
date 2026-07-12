@@ -26,3 +26,7 @@ run = "go run ./cmd/listhaul run -c config.example.toml"
 [tasks.validate]
 description = "Validate example config"
 run = "go run ./cmd/listhaul validate -c config.example.toml"
+
+[tasks."docker:build"]
+description = "Build the listhaul Docker image"
+run = "docker build -t listhaul:local ."
